@@ -53,6 +53,9 @@ import sys
 import yaml
 from ml_collections import ConfigDict
 from collections import Counter
+import torch_directml
+
+is_gpu_available = torch.backends.mps.is_available() if (OPERATING_SYSTEM == 'Darwin') else (torch_directml.is_available() or torch.cuda.is_available())
 
 # Change the current working directory to the directory
 # this file sits in
@@ -108,6 +111,8 @@ elif OPERATING_SYSTEM=="Windows":
     is_macos = False
     right_click_button = '<Button-3>'
     application_extension = ".exe"
+
+clear_gpu_cache = torch.mps.empty_cache if is_macos else torch.cuda.empty_cache
 
 def right_click_release_linux(window, top_win=None):
     if OPERATING_SYSTEM=="Linux":
@@ -1437,7 +1442,7 @@ class MainWindow(TkinterDnD.Tk if is_dnd_compatible else tk.Tk):
         self.mdx_hash_MAPPER = load_model_hash_data(MDX_HASH_JSON)
         self.mdx_name_select_MAPPER = load_model_hash_data(MDX_MODEL_NAME_SELECT)
         self.demucs_name_select_MAPPER = load_model_hash_data(DEMUCS_MODEL_NAME_SELECT)
-        self.is_gpu_available = torch.cuda.is_available() if not OPERATING_SYSTEM == 'Darwin' else torch.backends.mps.is_available()
+        self.is_gpu_available = is_gpu_available
         self.is_process_stopped = False
         self.inputs_from_dir = []
         self.iteration = 0
@@ -5479,7 +5484,7 @@ class MainWindow(TkinterDnD.Tk if is_dnd_compatible else tk.Tk):
             
         if self.clear_cache_torch:
             #self.set_app_font(is_chosen_font=True)
-            torch.cuda.empty_cache()
+            clear_gpu_cache()
             self.clear_cache_torch = False
             
         if self.is_process_stopped:
@@ -5492,7 +5497,7 @@ class MainWindow(TkinterDnD.Tk if is_dnd_compatible else tk.Tk):
                 self.conversion_Button_Text_var.set(START_PROCESSING)
                 self.conversion_Button.configure(state=tk.NORMAL)
                 self.progress_bar_main_var.set(0)
-                torch.cuda.empty_cache()
+                clear_gpu_cache()
                 self.is_process_stopped = False
 
         if self.is_confirm_error_var.get():
@@ -6589,7 +6594,7 @@ class MainWindow(TkinterDnD.Tk if is_dnd_compatible else tk.Tk):
                     if os.path.isfile(audio_file):
                         os.remove(audio_file)
                     
-                torch.cuda.empty_cache()
+                clear_gpu_cache()
                 
             shutil.rmtree(export_path) if is_ensemble and len(os.listdir(export_path)) == 0 else None
 
