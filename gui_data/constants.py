@@ -1,10 +1,13 @@
 import platform
+import GPUtil
 
 #Platform Details
 OPERATING_SYSTEM = platform.system()
 SYSTEM_ARCH = platform.platform()
 SYSTEM_PROC = platform.processor()
 ARM = 'arm'
+
+is_macos = True if OPERATING_SYSTEM == 'darwin' else False
 
 #MAIN_FONT_NAME = "Century Gothic"
 OPT_SEPARATOR_SAVE = '—'*25
@@ -1567,3 +1570,10 @@ def secondary_stem(stem:str):
         secondary_stem = stem.replace(NO_STEM, "") if NO_STEM in stem else f"{NO_STEM}{stem}"
     
     return secondary_stem
+
+def is_amd_gpu_present():
+    gpus = GPUtil.getGPUs()
+    for gpu in gpus:
+        if 'amd' in gpu.driver.lower() or 'ati' in gpu.driver.lower():
+            return True
+    return False
