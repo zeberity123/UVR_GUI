@@ -6,7 +6,7 @@
 
 ## Branch Details
 
-This branch is branch is meant for AMD support. 
+This branch is branch is meant for AMD GPU support. 
 
 - This code works with:
    - VR Arch (5.0, not 5.1)
