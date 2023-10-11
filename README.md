@@ -1,8 +1,21 @@
-# Ultimate Vocal Remover GUI v5.6
+# Ultimate Vocal Remover GUI v5.6 - OpenCL Branch
 <img src="https://raw.githubusercontent.com/Anjok07/ultimatevocalremovergui/master/gui_data/img/UVR_v5.6.png?raw=true" />
 
 [![Release](https://img.shields.io/github/release/anjok07/ultimatevocalremovergui.svg)](https://github.com/anjok07/ultimatevocalremovergui/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/anjok07/ultimatevocalremovergui/total.svg)](https://github.com/anjok07/ultimatevocalremovergui/releases)
+
+## Branch Details
+
+This branch is branch is meant for AMD support. 
+
+- This code works with:
+   - VR Arch (5.0, not 5.1)
+   - MDX-Net (not MDX23C)
+   - Demucs (v4 only)
+
+- Current issues:
+   - GPU memory is not clearing, so running ensembles might be difficult unless you have a lot of V-RAM.
+   - Compatibility with MDX23C and VR Arch 5.1 models.
 
 ## About
 
