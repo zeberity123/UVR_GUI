@@ -774,7 +774,8 @@ class HDemucs(nn.Module):
         # demucs issue #435 ##432
         # NOTE: in this case z already is on cpu
         # TODO: remove this when mps supports complex numbers
-        x_is_mps = x.device.type == "mps"
+        device_type = x.device.type
+        x_is_mps = not device_type in ["cuda", "cpu"]#x.device.type == "mps"
         if x_is_mps:
             x = x.cpu()
 
@@ -783,7 +784,7 @@ class HDemucs(nn.Module):
 
         # back to mps device
         if x_is_mps:
-            x = x.to('mps')
+            x = x.to(device_type)
 
         if self.hybrid:
             xt = xt.view(B, S, -1, length)
