@@ -9,13 +9,14 @@
 This branch is branch is meant for AMD GPU support. 
 
 - This code works with:
-   - VR Arch (5.0, not 5.1)
-   - MDX-Net (not MDX23C)
-   - Demucs (v4 only)
+   - VR Arch
+   - MDX-Net & MDX23C
+   - Demucs (v3 & v4 only)
 
 - Current issues:
-   - GPU memory is not clearing, so running ensembles might be difficult unless you have a lot of V-RAM.
-   - Compatibility with MDX23C and VR Arch 5.1 models.
+   - The GPU memory cache does not clear the same way it can with Cuda, so running ensembles might be difficult unless you have a lot of V-RAM.
+   - The MDX23C can't handle songs over 3 minutes long when using 8GB of video memory (V-RAM).
+   - Some VR 5.1 & Demucs v3 models might run slower with OpenCL. 
 
 ## About
 
@@ -41,10 +42,7 @@ These bundles contain the UVR interface, Python, PyTorch, and other dependencies
     - You must install UVR to the main C:\ drive. Installing UVR to a secondary drive will cause instability.
 
 - Download the UVR installer for Windows via the link below:
-    - [Main Download Link](https://github.com/Anjok07/ultimatevocalremovergui/releases/download/v5.6/UVR_v5.6.0_setup.exe)
-    - [Main Download Link mirror](https://www.mediafire.com/file_premium/wpxo3mvbw95364l/UVR_v5.6.0_setup.exe/file)
-- Update Package instructions for those who have UVR already installed:
-    - If you already have UVR installed you can install this package over it or download it straight from the application or [click here for the patch](https://github.com/Anjok07/ultimatevocalremovergui/releases/download/v5.6/UVR_Patch_9_29_23_1_39.exe).
+    - [Main Download Link](https://github.com/Anjok07/ultimatevocalremovergui/releases/download/v5.6/UVR_v5.6.0_setup_opencl.exe)
 
 <details id="WindowsManual">
   <summary>Windows Manual Installation</summary>
@@ -82,78 +80,6 @@ In order to use the Time Stretch or Change Pitch tool, you'll need Rubber Band.
 - From the archive, extract the following files to the UVR application directory:
    - ```rubberband-3.1.2-gpl-executable-windows/rubberband.exe```
    - ```rubberband-3.1.2-gpl-executable-windows/sndfile.dll```
-
-</details>
-
-### MacOS Installation
-- Please Note:
-    - The MacOS Sonoma mouse clicking issue has been fixed.
-    - MPS (GPU) acceleration for Mac M1 has been expanded to work with Demucs v4 and all MDX-Net models.
-    - This bundle is intended for those running macOS Catalina and above.
-    - Application functionality for systems running macOS Mojave or lower is not guaranteed.
-    - Application functionality for older or budget Mac systems is not guaranteed.
-    - Once everything is installed, the application may take up to 5-10 minutes to start for the first time (depending on your Macbook).
-
-- Download the UVR dmg for MacOS via one of the links below:
-    - Mac M1 (arm64) users:
-       - [Main Download Link](https://github.com/Anjok07/ultimatevocalremovergui/releases/download/v5.6/Ultimate_Vocal_Remover_v5_6_MacOS_arm64.dmg)
-       - [Main Download Link mirror](https://www.mediafire.com/file_premium/dxautmv78peegem/Ultimate_Vocal_Remover_v5_6_MacOS_arm64.dmg/file)
-
-    - Mac Intel (x86_64) users:
-       - [Main Download Link](https://github.com/Anjok07/ultimatevocalremovergui/releases/download/v5.6/Ultimate_Vocal_Remover_v5_6_MacOS_x86_64.dmg)
-       - [Main Download Link mirror](https://www.mediafire.com/file_premium/kz8k5b0g8pgf4er/Ultimate_Vocal_Remover_v5_6_MacOS_x86_64.dmg/file)
-
-<details id="CannotOpen">
-  <summary>MacOS Users: Having Trouble Opening UVR?</summary>
-
-> Due to Apples strict application security, you may need to follow these steps to open UVR.
->
-> First, run the following command via Terminal.app to allow applications to run from all sources (it's recommended that you re-enable this once UVR opens properly.)
-> 
-> ```bash
-> sudo spctl --master-disable
-> ```
-> 
-> Second, run the following command to bypass Notarization: 
-> 
-> ```bash
-> sudo xattr -rd com.apple.quarantine /Applications/Ultimate\ Vocal\ Remover.app
-> ```
-
-</details>
-
-<details id="MacInstall">
-  <summary>Manual MacOS Installation</summary>
-
-### Manual MacOS Installation
-
-- Download and save this repository [here](https://github.com/Anjok07/ultimatevocalremovergui/archive/refs/heads/master.zip)
-- Download and install Python 3.10 [here](https://www.python.org/ftp/python/3.10.9/python-3.10.9-macos11.pkg)
-- From the saved directory run the following - 
-
-```
-pip3 install -r requirements.txt
-```
-
-- If your Mac is running with an M1, please run the following command next. If not, skip this step. - 
-
-```
-cp /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/_soundfile_data/libsndfile_arm64.dylib /Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/_soundfile_data/libsndfile.dylib
-```
-
-**FFmpeg Installation**
-
-- Once everything is done installing, download the correct FFmpeg binary for your system [here](http://www.osxexperts.net) and place it into the main application directory.
-
-**Rubber Band Installation**
-
-In order to use the Time Stretch or Change Pitch tool, you'll need Rubber Band.
-
-- Download the precompiled build [here](https://breakfastquay.com/files/releases/rubberband-3.1.2-gpl-executable-windows.zip)
-- From the archive, extract the following files to the UVR/lib_v5 application directory:
-   - ```rubberband-3.1.2-gpl-executable-macos/rubberband```
-
-This process has been tested on a MacBook Pro 2021 (using M1) and a MacBook Air 2017 and is confirmed to be working on both.
 
 </details>
 
