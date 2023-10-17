@@ -1,5 +1,4 @@
 import platform
-import GPUtil
 
 #Platform Details
 OPERATING_SYSTEM = platform.system()
@@ -7,10 +6,14 @@ SYSTEM_ARCH = platform.platform()
 SYSTEM_PROC = platform.processor()
 ARM = 'arm'
 
-is_macos = True if OPERATING_SYSTEM == 'darwin' else False
+is_macos = False
+
+CPU = 'cpu'
+CUDA_DEVICE = 'cuda'
+DIRECTML_DEVICE = "privateuseone"
 
 #MAIN_FONT_NAME = "Century Gothic"
-OPT_SEPARATOR_SAVE = '—'*25
+OPT_SEPARATOR_SAVE = '─'*25
 BG_COLOR = '#0e0e0f'
 FG_COLOR = '#13849f'
 
@@ -320,7 +323,7 @@ BATCH_MODE = 'Batch Mode'
 BETA_VERSION = 'BETA'
 DEF_OPT = 'Default'
 USER_INPUT = "User Input"
-OPT_SEPARATOR = '—'*65
+OPT_SEPARATOR = '─'*65
 
 CHUNKS = (AUTO_SELECT, '1', '5', '10', '15', '20', 
           '25', '30', '35', '40', '45', '50', 
@@ -503,6 +506,7 @@ MP3 = 'MP3'
 
 MP3_BIT_RATES = ('96k', '128k', '160k', '224k', '256k', '320k')
 WAV_TYPE = ('PCM_U8', 'PCM_16', 'PCM_24', 'PCM_32', '32-bit Float', '64-bit Float')
+GPU_DEVICE_NUM_OPTS = (DEFAULT, '0', '1', '2', '3', '4', '5', '6', '7', '8')
 
 SELECT_SAVED_SET = 'Choose Option'
 SAVE_SETTINGS = 'Save Current Settings'
@@ -641,18 +645,20 @@ DEFAULT_DATA = {
         'is_accept_any_input': False,
         'is_task_complete': False,
         'is_normalization': False,
+        'is_use_opencl': False,
         'is_wav_ensemble': False,
         'is_create_model_folder': False,
         'mp3_bit_set': '320k',#
         'semitone_shift': '0',#
         'save_format': WAV,
         'wav_type_set': 'PCM_16',
+        'device_set': DEFAULT,
         'user_code': '',
         'export_path': '',
         'input_paths': [],
         'lastDir': None,
         'time_window': "3",
-        'intro_analysis': "Default",
+        'intro_analysis': DEFAULT,
         'db_analysis': "Medium",
         'fileOneEntry': '',
         'fileOneEntry_Full': '',
@@ -757,9 +763,11 @@ SETTING_CHECK = ('vr_model',
                'semitone_shift',#
                'save_format',
                'wav_type_set',
+               'device_set',
                'user_code',
                'is_gpu_conversion',
                'is_normalization',
+               'is_use_opencl',
                'is_wav_ensemble',
                'help_hints_var',
                'set_vocal_splitter',
@@ -846,6 +854,7 @@ MDX_23_NAME = "MDX23C Model"
 
 # Liscense info
 if OPERATING_SYSTEM=="Darwin":
+   is_macos = True
    LICENSE_OS_SPECIFIC_TEXT = '• This application is intended for those running macOS Catalina and above.\n' +\
                               '• Application functionality for systems running macOS Mojave or lower is not guaranteed.\n' +\
                               '• Application functionality for older or budget Mac systems is not guaranteed.\n\n'
@@ -1018,6 +1027,7 @@ else:
 IS_TIME_CORRECTION_HELP = ('When checked, the output will retain the original BPM of the input.')
 SAVE_STEM_ONLY_HELP = 'Allows the user to save only the selected stem.'
 IS_NORMALIZATION_HELP = 'Normalizes output to prevent clipping.'
+IS_CUDA_SELECT_HELP = "If you have more than one GPU, you can pick which one to use for processing."
 CROP_SIZE_HELP = '**Only compatible with select models only!**\n\n Setting should match training crop-size value. Leave as is if unsure.'
 IS_TTA_HELP = ('This option performs Test-Time-Augmentation to improve the separation quality.\n\n'
                'Note: Having this selected will increase the time it takes to complete a conversion')
@@ -1071,7 +1081,7 @@ IS_INVERT_SPEC_HELP = (
     '• Inverts primary stem using spectrograms, instead of waveforms.\n'
     '• Slightly slower inversion method.'
 )
-IS_TESTING_AUDIO_HELP = 'Adds a unique 10-digit number to outputs so prevent users from overwriting files.'
+IS_TESTING_AUDIO_HELP = 'Adds a unique 10-digit number to outputs to prevent users from overwriting files.'
 IS_MODEL_TESTING_AUDIO_HELP = 'Appends the model name to outputs for comparison across different models.'
 IS_ACCEPT_ANY_INPUT_HELP = (
     'Allows all types of inputs when enabled, even non-audio formats.\n'
@@ -1441,6 +1451,7 @@ NAME_SETTINGS_TEXT = 'Name Settings'
 NO_DEFINED_PARAMETERS_FOUND_TEXT = 'No Defined Parameters Found'
 NO_TEXT = 'No'
 NORMALIZE_OUTPUT_TEXT = 'Normalize Output'
+USE_OPENCL_TEXT = 'Use OpenCL'
 NOT_ENOUGH_MODELS_TEXT = 'Not Enough Models'
 NOTIFICATION_CHIMES_TEXT = 'Notification Chimes'
 OPEN_APPLICATION_DIRECTORY_TEXT = 'Open Application Directory'
@@ -1502,6 +1513,7 @@ VOLUME_COMPENSATION_TEXT = 'Volume Compensation'
 VR_51_MODEL_TEXT = 'VR 5.1 Model'
 VR_ARCH_TEXT = 'VR Arch'
 WAV_TYPE_TEXT = 'Wav Type'
+CUDA_NUM_TEXT = 'GPU Device'
 WINDOW_SIZE_TEXT = 'Window Size'
 YES_TEXT = 'Yes'
 VERIFY_INPUTS_TEXT = 'Verify Inputs'
@@ -1552,7 +1564,7 @@ CONFIRM_RESTART_TEXT = 'Restart Confirmation', 'This will restart the applicatio
 ERROR_LOADING_FILE_TEXT = 'Error Loading the Following File', 'Raw Error Details'
 LOADING_MODEL_TEXT = 'Loading model'
 FULL_APP_SET_TEXT = 'Full Application Settings'
-PROCESS_STARTING_TEXT = 'Process starting... \n'
+PROCESS_STARTING_TEXT = 'Process starting... '
 PROCESS_STOPPED_BY_USER = '\n\nProcess stopped by user.'
 NEW_UPDATE_FOUND_TEXT = lambda version:f"\n\nNew Update Found: {version}\n\nClick the update button in the \"Settings\" menu to download and install!"
 ROLL_BACK_TEXT = 'Click Here to Roll Back'
@@ -1570,10 +1582,3 @@ def secondary_stem(stem:str):
         secondary_stem = stem.replace(NO_STEM, "") if NO_STEM in stem else f"{NO_STEM}{stem}"
     
     return secondary_stem
-
-def is_amd_gpu_present():
-    gpus = GPUtil.getGPUs()
-    for gpu in gpus:
-        if 'amd' in gpu.driver.lower() or 'ati' in gpu.driver.lower():
-            return True
-    return False
