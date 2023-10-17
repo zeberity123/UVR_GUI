@@ -134,9 +134,7 @@ python UVR.py
 </details>
 
 ### Other Application Notes
-- Nvidia RTX 1060 6GB is the minimum requirement for GPU conversions.
-- Nvidia GPUs with at least 8GBs of V-RAM are recommended.
-- AMD Radeon GPUs are not supported at this time.
+- GPUs with at least 8GBs of V-RAM are recommended.
 - This application is only compatible with 64-bit platforms. 
 - This application relies on the Rubber Band library for the Time-Stretch and Pitch-Shift options.
 - This application relies on FFmpeg to process non-wav audio files.
