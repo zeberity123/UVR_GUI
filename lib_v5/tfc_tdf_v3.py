@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 from functools import partial
-import torch_directml
 
 class STFT:
     def __init__(self, n_fft, hop_length, dim_f, device):
@@ -52,7 +51,6 @@ class STFT:
             x = x.to(self.device)
 
         return x
-
 
 def get_norm(norm_type):
     def norm(c, norm_type):
