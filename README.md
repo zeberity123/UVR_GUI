@@ -15,7 +15,7 @@ This branch is branch is meant for AMD GPU support.
 
 - Current issues:
    - The GPU memory cache does not clear the same way it can with Cuda, so running ensembles might be difficult unless you have a lot of V-RAM.
-   - The MDX23C models can't handle songs over 3 minutes with OpenCL using 8GB of video memory (V-RAM).
+   - The MDX23C models might not handle segment sizes above 256 with OpenCL using 8GB of video memory (V-RAM).
    - Some VR 5.1 & Demucs v3 models might run slower with OpenCL. 
 
 ## About
